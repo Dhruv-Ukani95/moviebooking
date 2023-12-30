@@ -1,6 +1,7 @@
 const  User  = require("../models/User");
 const bcrypt = require('bcryptjs');
 const Booking = require("../models/Booking");
+const multer = require('multer');
 
 const getAllUser = async (req,res,next) => {
     let users;
@@ -126,4 +127,17 @@ const getUserById = async (req, res, next) => {
     }
     return res.status(200).json({users})
 }
-module.exports = {getAllUser, signup, updateUser, deleteUser, login, getBookingsofUser, getUserById};
+
+const imageUpload = multer({
+    storage: multer.diskStorage({
+        destination: function(req, file, cb)
+        {
+            cb(null,'uploads');
+        },
+        filename: function(req, file, cb)
+        {
+            cb(null, file.fieldname+ "-"+Date.now()+".jpg")
+        }
+    })
+}).single("profile_image")
+module.exports = {getAllUser, signup, updateUser, deleteUser, login, getBookingsofUser, getUserById, imageUpload};
